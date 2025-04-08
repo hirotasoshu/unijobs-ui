@@ -65,7 +65,8 @@ export class DummyVacancyGateway implements VacancyGateway {
         vacancy.key_skills.some((skill) => skill.toLowerCase().includes(term));
 
       const matchesSalary =
-        salaryFrom == null || vacancy.salaryFrom >= salaryFrom;
+        salaryFrom == null ||
+        (vacancy.salaryFrom && vacancy.salaryFrom >= salaryFrom);
 
       const matchesWorkFormat =
         workFormat == null || vacancy.workFormat === workFormat;
