@@ -1,10 +1,10 @@
-import { VacancyGateway } from "../../../domain/gateways/vacancyGateway";
 import {
   VacancyDetailViewModel,
   VacancyFilters,
   VacancyViewModel,
-} from "../../../domain/models/vacancy";
-import { PaginatedResult } from "../../../domain/shared/paginatedResult";
+} from "../../../../application/common/models/vacancy";
+import { PaginatedResult } from "../../../../application/query/common/paginatedResult";
+import { VacancyGateway } from "../../../../application/query/ports/vacancyGateway";
 
 const mockVacancies: VacancyDetailViewModel[] = [
   {

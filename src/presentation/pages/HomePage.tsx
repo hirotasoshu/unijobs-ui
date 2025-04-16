@@ -16,11 +16,14 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { GetVacanciesByFilters } from "../../application/useCases/getVacanciesByFilters";
-import { VacancyFilters, VacancyViewModel } from "../../domain/models/vacancy";
+import {
+  VacancyFilters,
+  VacancyViewModel,
+} from "../../application/common/models/vacancy";
+import { GetVacanciesByFilters } from "../../application/query/getVacanciesByFilters";
 import { EmploymentType } from "../../domain/valueObjects/employmentType";
 import { WorkFormat } from "../../domain/valueObjects/workformat";
-import { DummyVacancyGateway } from "../../infra/adapters/vacancy/dummyVacancyAdapter";
+import { DummyVacancyGateway } from "../../infra/adapters/persistance/dummy/vacancyAdapter";
 import VacancyCard from "../components/VacancyCard";
 
 const PAGE_SIZE = 5;

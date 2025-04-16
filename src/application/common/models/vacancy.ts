@@ -1,6 +1,6 @@
-import { EmploymentType } from "../valueObjects/employmentType";
-import { VacancyId } from "../valueObjects/id";
-import { WorkFormat } from "../valueObjects/workformat";
+import { EmploymentType } from "../../../domain/valueObjects/employmentType";
+import { VacancyId } from "../../../domain/valueObjects/id";
+import { WorkFormat } from "../../../domain/valueObjects/workformat";
 import { EmployerViewModel } from "./employer";
 
 export interface VacancyViewModel {

@@ -1,6 +1,6 @@
-import { VacancyGateway } from "../../domain/gateways/vacancyGateway";
-import { VacancyFilters, VacancyViewModel } from "../../domain/models/vacancy";
-import { PaginatedResult } from "../../domain/shared/paginatedResult";
+import { VacancyGateway } from "./ports/vacancyGateway";
+import { PaginatedResult } from "./common/paginatedResult";
+import { VacancyViewModel, VacancyFilters } from "../common/models/vacancy";
 
 export class GetVacanciesByFilters {
   constructor(private gateway: VacancyGateway) {}

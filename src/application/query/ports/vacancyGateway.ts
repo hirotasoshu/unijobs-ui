@@ -2,9 +2,9 @@ import {
   VacancyDetailViewModel,
   VacancyFilters,
   VacancyViewModel,
-} from "../models/vacancy";
-import { PaginatedResult } from "../shared/paginatedResult";
-import { VacancyId } from "../valueObjects/id";
+} from "../../common/models/vacancy";
+import { PaginatedResult } from "../common/paginatedResult";
+import { VacancyId } from "../../../domain/valueObjects/id";
 
 export interface VacancyGateway {
   getByFilters(

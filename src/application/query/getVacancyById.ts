@@ -1,6 +1,6 @@
-import { VacancyGateway } from "../../domain/gateways/vacancyGateway";
-import { VacancyDetailViewModel } from "../../domain/models/vacancy";
 import { VacancyId } from "../../domain/valueObjects/id";
+import { VacancyDetailViewModel } from "../common/models/vacancy";
+import { VacancyGateway } from "./ports/vacancyGateway";
 
 export class GetVacancyById {
   constructor(private gateway: VacancyGateway) {}

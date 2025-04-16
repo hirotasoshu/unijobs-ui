@@ -13,9 +13,9 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { GetVacancyById } from "../../application/useCases/getVacancyById";
-import { VacancyDetailViewModel } from "../../domain/models/vacancy";
-import { DummyVacancyGateway } from "../../infra/adapters/vacancy/dummyVacancyAdapter";
+import { GetVacancyById } from "../../application/query/getVacancyById";
+import { VacancyDetailViewModel } from "../../application/common/models/vacancy";
+import { DummyVacancyGateway } from "../../infra/adapters/persistance/dummy/vacancyAdapter";
 import { formatSalary } from "../shared/formatSalary";
 
 const gateway = new DummyVacancyGateway();

@@ -1,4 +1,4 @@
-import { EmployerId } from "../valueObjects/id";
+import { EmployerId } from "../../../domain/valueObjects/id";
 
 export interface EmployerViewModel {
   id: EmployerId;

@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { VacancyViewModel } from "../../domain/models/vacancy";
+import { VacancyViewModel } from "../../application/common/models/vacancy";
 import { formatSalary } from "../shared/formatSalary";
 
 interface Props {
