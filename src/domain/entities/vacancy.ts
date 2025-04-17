@@ -126,8 +126,17 @@ export class Vacancy {
     this._id = id;
   }
 
-  setSalaryRange(from?: number, to?: number) {
-    this._salaryFrom = from;
-    this._salaryTo = to;
+  set salaryFrom(salary: number) {
+    if (this._salaryTo && salary > this._salaryTo) {
+      throw new Error("Salary from can't be bigger than salary to");
+    }
+    this._salaryFrom = salary;
+  }
+
+  set salaryTo(salary: number) {
+    if (this._salaryFrom && salary < this._salaryFrom) {
+      throw new Error("Salary to can't be less than salaryFrom");
+    }
+    this._salaryTo = salary;
   }
 }
