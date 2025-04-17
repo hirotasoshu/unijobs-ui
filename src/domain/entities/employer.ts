@@ -1,7 +1,7 @@
 import { EmployerId } from "../valueObjects/id";
+import { Entity } from "./base";
 
-export class Employer {
-  private _id?: EmployerId;
+export class Employer extends Entity<EmployerId> {
   private _name: string;
   private _avatarUrl: string;
   private _description: string;
@@ -12,7 +12,7 @@ export class Employer {
     avatarUrl: string;
     description: string;
   }) {
-    this._id = props.id;
+    super(props.id);
     this._name = props.name;
     this._avatarUrl = props.avatarUrl;
     this._description = props.description;
@@ -20,10 +20,6 @@ export class Employer {
 
   static createNew(props: Omit<Employer, "id">): Employer {
     return new Employer({ ...props, id: undefined });
-  }
-
-  get id(): EmployerId | undefined {
-    return this._id;
   }
 
   get name(): string {

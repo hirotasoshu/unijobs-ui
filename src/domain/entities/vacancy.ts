@@ -2,9 +2,9 @@ import { VacancyId } from "../valueObjects/id";
 import { EmployerId } from "../valueObjects/id";
 import { WorkFormat } from "../valueObjects/workformat";
 import { EmploymentType } from "../valueObjects/employmentType";
+import { Entity } from "./base";
 
-export class Vacancy {
-  private _id?: VacancyId;
+export class Vacancy extends Entity<VacancyId> {
   private _title: string;
   private _salaryFrom?: number;
   private _salaryTo?: number;
@@ -27,7 +27,7 @@ export class Vacancy {
     employmentType: EmploymentType;
     employerId: EmployerId;
   }) {
-    this._id = props.id;
+    super(props.id);
     this._title = props.title;
     this._salaryFrom = props.salaryFrom;
     this._salaryTo = props.salaryTo;
@@ -41,10 +41,6 @@ export class Vacancy {
 
   static createNew(props: Omit<Vacancy, "id">): Vacancy {
     return new Vacancy({ ...props, id: undefined });
-  }
-
-  get id(): VacancyId | undefined {
-    return this._id;
   }
 
   get title(): string {
@@ -83,22 +79,10 @@ export class Vacancy {
     return this._employerId;
   }
 
-  get props() {
-    return {
-      id: this._id,
-      title: this._title,
-      salaryFrom: this._salaryFrom,
-      salaryTo: this._salaryTo,
-      description: this._description,
-      location: this._location,
-      keySkills: this._keySkills,
-      workFormat: this._workFormat,
-      employmentType: this._employmentType,
-      employerId: this._employerId,
-    };
-  }
-
   set title(title: string) {
+    if (!title || title.length < 5) {
+      throw new Error("Title must be at least 5 characters long");
+    }
     this._title = title;
   }
 
@@ -120,10 +104,6 @@ export class Vacancy {
 
   set employmentType(type: EmploymentType) {
     this._employmentType = type;
-  }
-
-  set id(id: VacancyId) {
-    this._id = id;
   }
 
   set salaryFrom(salary: number) {
