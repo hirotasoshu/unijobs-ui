@@ -18,6 +18,10 @@ interface Props {
 
 const VacancyCard = ({ vacancy }: Props) => {
   const navigate = useNavigate();
+  const handleEmployerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/employers/${vacancy.employer.id}`);
+  };
 
   return (
     <Card sx={{ width: "100%" }}>
@@ -37,7 +41,18 @@ const VacancyCard = ({ vacancy }: Props) => {
             >
               <div>
                 <Typography variant="h6">{vacancy.title}</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  onClick={handleEmployerClick}
+                  sx={{
+                    display: "inline",
+                    "&:hover": {
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                    },
+                  }}
+                >
                   {vacancy.employer.name}
                 </Typography>
               </div>

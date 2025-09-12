@@ -2,6 +2,7 @@ import { EmploymentType } from "../../../domain/valueObjects/employmentType";
 import { VacancyId } from "../../../domain/valueObjects/id";
 import { WorkFormat } from "../../../domain/valueObjects/workformat";
 import { EmployerViewModel } from "./employer";
+import { EmployerId } from "../../../domain/valueObjects/id";
 
 export interface VacancyViewModel {
   id: VacancyId;
@@ -26,4 +27,5 @@ export type VacancyFilters = {
   salaryFrom?: number;
   workFormat?: WorkFormat;
   employmentType?: EmploymentType;
+  employerId?: EmployerId;
 };

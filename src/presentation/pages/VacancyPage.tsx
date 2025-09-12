@@ -12,10 +12,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { GetVacancyById } from "../../application/query/getVacancyById";
+import { useNavigate, useParams } from "react-router-dom";
 import { VacancyDetailViewModel } from "../../application/common/models/vacancy";
-import { DummyVacancyGateway } from "../../infra/adapters/persistance/dummy/vacancyAdapter";
+import { GetVacancyById } from "../../application/query/getVacancyById";
+import { DummyVacancyGateway } from "../../infra/adapters/persistance/dummy/vacancyGateway";
 import { formatSalary } from "../shared/formatSalary";
 
 const gateway = new DummyVacancyGateway();
@@ -24,6 +24,7 @@ const useCase = new GetVacancyById(gateway);
 const VacancyPage = () => {
   const { id } = useParams<{ id: string }>();
   const [vacancy, setVacancy] = useState<VacancyDetailViewModel | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -32,6 +33,11 @@ const VacancyPage = () => {
   }, [id]);
 
   if (!vacancy) return <Typography>Загрузка...</Typography>;
+
+  const handleEmployerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/employers/${vacancy.employer.id}`);
+  };
 
   return (
     <Container sx={{ mt: 6 }}>
@@ -52,7 +58,19 @@ const VacancyPage = () => {
           {vacancy.title}
         </Typography>
 
-        <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography
+          variant="subtitle1"
+          color="text.secondary"
+          onClick={handleEmployerClick}
+          sx={{
+            mb: 2,
+            display: "inline",
+            "&:hover": {
+              textDecoration: "underline",
+              cursor: "pointer",
+            },
+          }}
+        >
           <BusinessIcon sx={{ verticalAlign: "middle", mr: 1 }} />
           {vacancy.employer.name} • {vacancy.location}
         </Typography>
