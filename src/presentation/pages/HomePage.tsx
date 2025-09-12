@@ -23,7 +23,7 @@ import {
 import { GetVacanciesByFilters } from "../../application/query/getVacanciesByFilters";
 import { EmploymentType } from "../../domain/valueObjects/employmentType";
 import { WorkFormat } from "../../domain/valueObjects/workformat";
-import { DummyVacancyGateway } from "../../infra/adapters/persistance/dummy/vacancyGateway";
+import { DummyVacancyGateway } from "../../infra/persistance/dummy/vacancyGateway";
 import VacancyCard from "../components/VacancyCard";
 
 const PAGE_SIZE = 5;

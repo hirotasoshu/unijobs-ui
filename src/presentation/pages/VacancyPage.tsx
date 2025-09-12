@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { VacancyDetailViewModel } from "../../application/common/models/vacancy";
 import { GetVacancyById } from "../../application/query/getVacancyById";
-import { DummyVacancyGateway } from "../../infra/adapters/persistance/dummy/vacancyGateway";
+import { DummyVacancyGateway } from "../../infra/persistance/dummy/vacancyGateway";
 import { formatSalary } from "../shared/formatSalary";
 
 const gateway = new DummyVacancyGateway();

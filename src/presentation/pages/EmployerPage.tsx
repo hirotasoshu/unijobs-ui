@@ -14,8 +14,8 @@ import { VacancyViewModel } from "../../application/common/models/vacancy";
 import { PaginatedResult } from "../../application/query/common/paginatedResult";
 import { GetEmployerById } from "../../application/query/getEmployerById";
 import { GetVacanciesByFilters } from "../../application/query/getVacanciesByFilters";
-import { DummyEmployerGateway } from "../../infra/adapters/persistance/dummy/employerGateway";
-import { DummyVacancyGateway } from "../../infra/adapters/persistance/dummy/vacancyGateway";
+import { DummyEmployerGateway } from "../../infra/persistance/dummy/employerGateway";
+import { DummyVacancyGateway } from "../../infra/persistance/dummy/vacancyGateway";
 import VacancyCard from "../components/VacancyCard";
 
 export const EmployerPage = () => {

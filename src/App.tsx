@@ -4,7 +4,7 @@ import VacancyPage from "./presentation/pages/VacancyPage";
 import { EmployerPage } from "./presentation/pages/EmployerPage";
 import Layout from "./presentation/Layout";
 import { AuthProvider } from "./application/auth/authContext";
-import { KeycloakIdentityProvider } from "./infra/adapters/auth/idp";
+import { KeycloakIdentityProvider } from "./infra/auth/idp";
 
 const keycloakProvider = new KeycloakIdentityProvider();
 
