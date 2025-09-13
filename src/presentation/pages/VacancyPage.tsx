@@ -17,6 +17,7 @@ import { VacancyDetailViewModel } from "../../application/common/models/vacancy"
 import { GetVacancyById } from "../../application/query/getVacancyById";
 import { DummyVacancyGateway } from "../../infra/persistance/dummy/vacancyGateway";
 import { formatSalary } from "../shared/formatSalary";
+import { useAuth } from "../../application/auth/authContext";
 
 const gateway = new DummyVacancyGateway();
 const useCase = new GetVacancyById(gateway);
@@ -25,6 +26,7 @@ const VacancyPage = () => {
   const { id } = useParams<{ id: string }>();
   const [vacancy, setVacancy] = useState<VacancyDetailViewModel | null>(null);
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (id) {
@@ -142,9 +144,20 @@ const VacancyPage = () => {
           ))}
         </Box>
 
-        <Button variant="contained" color="primary" fullWidth>
-          Откликнуться
-        </Button>
+        {isAuthenticated ? (
+          <Button variant="contained" color="primary" fullWidth>
+            Откликнуться
+          </Button>
+        ) : (
+          <Typography
+            variant="body1"
+            color="error"
+            align="center"
+            sx={{ mt: 2 }}
+          >
+            Откликнуться может только авторизованный пользователь
+          </Typography>
+        )}
       </Card>
     </Container>
   );
