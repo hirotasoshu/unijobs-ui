@@ -1,5 +1,6 @@
 import Keycloak from "keycloak-js";
 import { IdentityProvider } from "../../application/auth/idp";
+import { UserId } from "../../domain/valueObjects/id";
 
 export class KeycloakIdentityProvider implements IdentityProvider {
   private keycloak: Keycloak;
@@ -37,6 +38,10 @@ export class KeycloakIdentityProvider implements IdentityProvider {
 
   getUsername(): string | null {
     return this.keycloak.tokenParsed?.preferred_username || null;
+  }
+
+  getUserId(): UserId | null {
+    return this.keycloak.tokenParsed?.sub || null;
   }
 
   getRoles(): string[] {

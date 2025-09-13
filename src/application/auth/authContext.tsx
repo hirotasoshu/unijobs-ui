@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { IdentityProvider } from "./idp";
+import { UserId } from "../../domain/valueObjects/id";
 
 export interface AuthContextType {
   isAuthenticated: boolean;
   username: string | null;
+  userId: UserId | null;
   roles: string[];
   login: () => Promise<void>;
   logout: () => Promise<void>;
@@ -21,6 +23,7 @@ export const AuthProvider = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
+  const [userId, setUserId] = useState<UserId | null>(null);
   const [roles, setRoles] = useState<string[]>([]);
 
   useEffect(() => {
@@ -28,6 +31,7 @@ export const AuthProvider = ({
       await provider.init();
       setIsAuthenticated(provider.isAuthenticated());
       setUsername(provider.getUsername());
+      setUserId(provider.getUserId());
       setRoles(provider.getRoles());
     };
     init();
@@ -37,6 +41,7 @@ export const AuthProvider = ({
     await provider.login();
     setIsAuthenticated(provider.isAuthenticated());
     setUsername(provider.getUsername());
+    setUserId(provider.getUserId());
     setRoles(provider.getRoles());
   };
 
@@ -44,6 +49,7 @@ export const AuthProvider = ({
     await provider.logout();
     setIsAuthenticated(false);
     setUsername(null);
+    setUserId(null);
     setRoles([]);
   };
 
@@ -53,7 +59,15 @@ export const AuthProvider = ({
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, username, roles, login, logout, getToken }}
+      value={{
+        isAuthenticated,
+        username,
+        userId,
+        roles,
+        login,
+        logout,
+        getToken,
+      }}
     >
       {children}
     </AuthContext.Provider>
