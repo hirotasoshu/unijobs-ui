@@ -7,32 +7,64 @@ import {
   Button,
   Card,
   CardMedia,
+  Chip,
   Container,
   Grid,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { VacancyDetailViewModel } from "../../application/common/models/vacancy";
-import { GetVacancyById } from "../../application/query/getVacancyById";
-import { DummyVacancyGateway } from "../../infra/persistance/dummy/vacancyGateway";
-import { formatSalary } from "../shared/formatSalary";
 import { useAuth } from "../../application/auth/authContext";
+import { ApplicationMapper } from "../../application/common/modelMappers/application";
+import { VacancyDetailViewModel } from "../../application/common/models/vacancy";
+import { GetUserApplicationForVacancy } from "../../application/query/getUserApplicationForVacancy";
+import { GetVacancyById } from "../../application/query/getVacancyById";
+import { ApplyForVacancyUseCase } from "../../application/usecase/applyForVacancy";
+import { UpdateApplicationCoverLetter } from "../../application/usecase/updateApplicationCoverLetter";
+import { DummyVacancyGateway } from "../../infra/persistance/dummy/vacancyGateway";
+import { DummyApplicationGateway } from "../../infra/persistance/dummy/applicationGateway";
+import { DummyApplicationDataMapper } from "../../infra/persistance/dummy/applicationDataMapper";
+import { formatSalary } from "../shared/formatSalary";
+import { Application } from "../../domain/entities/application";
 
-const gateway = new DummyVacancyGateway();
-const useCase = new GetVacancyById(gateway);
+const vacancyGateway = new DummyVacancyGateway();
+const applicationGateway = new DummyApplicationGateway();
+const applicationDataMapper = new DummyApplicationDataMapper();
+
+const getVacancyQuery = new GetVacancyById(vacancyGateway);
+const getUserApplicationQuery = new GetUserApplicationForVacancy(
+  applicationGateway,
+);
+const applyUseCase = new ApplyForVacancyUseCase(applicationDataMapper);
+const updateCoverLetterUseCase = new UpdateApplicationCoverLetter(
+  applicationDataMapper,
+);
 
 const VacancyPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [vacancy, setVacancy] = useState<VacancyDetailViewModel | null>(null);
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const authContext = useAuth();
+
+  const [vacancy, setVacancy] = useState<VacancyDetailViewModel | null>(null);
+  const [application, setApplication] = useState<Application | null>(null);
+  const [coverLetter, setCoverLetter] = useState("");
 
   useEffect(() => {
     if (id) {
-      useCase.execute(id).then(setVacancy);
+      getVacancyQuery.execute(id).then(setVacancy);
+
+      if (authContext.isAuthenticated) {
+        getUserApplicationQuery.execute(id, authContext).then((appVm) => {
+          if (appVm) {
+            const entity = ApplicationMapper.toEntity(appVm);
+            setApplication(entity);
+            setCoverLetter(entity.coverLetter);
+          }
+        });
+      }
     }
-  }, [id]);
+  }, [id, authContext.isAuthenticated]);
 
   if (!vacancy) return <Typography>Загрузка...</Typography>;
 
@@ -40,6 +72,73 @@ const VacancyPage = () => {
     e.stopPropagation();
     navigate(`/employers/${vacancy.employer.id}`);
   };
+
+  const handleApply = async () => {
+    if (!vacancy) return;
+
+    const optimisticEntity = Application.createNew({
+      vacancyId: vacancy.id,
+      coverLetter,
+    });
+    setApplication(optimisticEntity);
+
+    try {
+      await applyUseCase.execute(vacancy.id, coverLetter, authContext);
+    } catch (error) {
+      console.error(error);
+      setApplication(null);
+    }
+  };
+
+  const handleUpdateCoverLetter = async () => {
+    if (!application) return;
+
+    const prevCoverLetter = application.coverLetter;
+    const updatedEntity = new Application({
+      id: application.id,
+      vacancyId: application.vacancyId,
+      coverLetter,
+      status: application.status,
+      userId: application.userId,
+    });
+    setApplication(updatedEntity);
+
+    try {
+      await updateCoverLetterUseCase.execute(
+        application,
+        coverLetter,
+        authContext,
+      );
+    } catch (error) {
+      console.error(error);
+      setApplication(
+        new Application({
+          id: application.id,
+          vacancyId: application.vacancyId,
+          coverLetter: prevCoverLetter,
+          status: application.status,
+          userId: application.userId,
+        }),
+      );
+    }
+  };
+
+  const getStatusChip = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <Chip label="В ожидании" color="warning" />;
+      case "reviewed":
+        return <Chip label="Просмотрено" color="info" />;
+      case "accepted":
+        return <Chip label="Принято" color="success" />;
+      case "rejected":
+        return <Chip label="Отклонено" color="error" />;
+      default:
+        return <Chip label="Неизвестно" />;
+    }
+  };
+
+  const isUpdateDisabled = application?.status !== "pending";
 
   return (
     <Container sx={{ mt: 6 }}>
@@ -59,7 +158,6 @@ const VacancyPage = () => {
         <Typography variant="h4" component="h1" gutterBottom>
           {vacancy.title}
         </Typography>
-
         <Typography
           variant="subtitle1"
           color="text.secondary"
@@ -67,10 +165,7 @@ const VacancyPage = () => {
           sx={{
             mb: 2,
             display: "inline",
-            "&:hover": {
-              textDecoration: "underline",
-              cursor: "pointer",
-            },
+            "&:hover": { textDecoration: "underline", cursor: "pointer" },
           }}
         >
           <BusinessIcon sx={{ verticalAlign: "middle", mr: 1 }} />
@@ -90,7 +185,6 @@ const VacancyPage = () => {
               </Typography>
             </Box>
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <WorkOutlineIcon sx={{ mr: 1 }} />
@@ -104,7 +198,6 @@ const VacancyPage = () => {
               </Typography>
             </Box>
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <AccessTimeIcon sx={{ mr: 1 }} />
@@ -114,7 +207,7 @@ const VacancyPage = () => {
                   ? "Частичная занятость"
                   : vacancy.employmentType === "full-time"
                     ? "Полная занятость"
-                    : vacancy.employmentType == "internship"
+                    : vacancy.employmentType === "internship"
                       ? "Стажировка"
                       : "Подработка"}
               </Typography>
@@ -144,10 +237,50 @@ const VacancyPage = () => {
           ))}
         </Box>
 
-        {isAuthenticated ? (
-          <Button variant="contained" color="primary" fullWidth>
-            Откликнуться
-          </Button>
+        {authContext.isAuthenticated ? (
+          <>
+            <TextField
+              label="Сопроводительное письмо"
+              multiline
+              fullWidth
+              rows={4}
+              value={coverLetter}
+              onChange={(e) => setCoverLetter(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+
+            {application ? (
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                disabled={isUpdateDisabled}
+                onClick={handleUpdateCoverLetter}
+              >
+                Изменить сопроводительное письмо
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={handleApply}
+              >
+                Откликнуться на вакансию
+              </Button>
+            )}
+
+            {application && (
+              <Box sx={{ mt: 2 }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  Статус отклика: {getStatusChip(application.status)}
+                </Typography>
+              </Box>
+            )}
+          </>
         ) : (
           <Typography
             variant="body1"
