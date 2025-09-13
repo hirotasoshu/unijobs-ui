@@ -1,7 +1,7 @@
-import { EmployerDetailViewModel } from "../../../../application/common/models/employer";
-import { EmployerGateway } from "../../../../application/query/ports/employerGateway";
+import { EmployerDetailViewModel } from "../../../application/common/models/employer";
+import { EmployerGateway } from "../../../application/query/ports/employerGateway";
 import { mockEmployers } from "./mocks/employers";
-import { EmployerId } from "../../../../domain/valueObjects/id";
+import { EmployerId } from "../../../domain/valueObjects/id";
 
 const EMPLOYERS_KEY = "employers";
 

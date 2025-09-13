@@ -1,5 +1,5 @@
 import Keycloak from "keycloak-js";
-import { IdentityProvider } from "../../../application/auth/idp";
+import { IdentityProvider } from "../../application/auth/idp";
 
 export class KeycloakIdentityProvider implements IdentityProvider {
   private keycloak: Keycloak;

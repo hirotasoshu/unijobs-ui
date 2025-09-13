@@ -1,4 +1,4 @@
-import { EmployerDetailViewModel } from "../../../../../application/common/models/employer";
+import { EmployerDetailViewModel } from "../../../../application/common/models/employer";
 
 export const mockEmployers: EmployerDetailViewModel[] = [
   {

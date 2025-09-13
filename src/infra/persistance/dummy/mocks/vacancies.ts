@@ -1,4 +1,4 @@
-import { VacancyDetailViewModel } from "../../../../../application/common/models/vacancy";
+import { VacancyDetailViewModel } from "../../../../application/common/models/vacancy";
 
 export const mockVacancies: VacancyDetailViewModel[] = [
   {

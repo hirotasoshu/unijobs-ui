@@ -2,11 +2,11 @@ import {
   VacancyDetailViewModel,
   VacancyFilters,
   VacancyViewModel,
-} from "../../../../application/common/models/vacancy";
-import { PaginatedResult } from "../../../../application/query/common/paginatedResult";
-import { VacancyGateway } from "../../../../application/query/ports/vacancyGateway";
+} from "../../../application/common/models/vacancy";
+import { PaginatedResult } from "../../../application/query/common/paginatedResult";
+import { VacancyGateway } from "../../../application/query/ports/vacancyGateway";
 import { mockVacancies } from "./mocks/vacancies";
-import { VacancyId } from "../../../../domain/valueObjects/id";
+import { VacancyId } from "../../../domain/valueObjects/id";
 
 const VACANCIES_KEY = "vacancies";
 
