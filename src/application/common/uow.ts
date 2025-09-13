@@ -1,5 +1,6 @@
 import { Entity } from "../../domain/entities/base";
 import { DataMapper } from "../../application/ports/dataMappers/base";
+import { AuthContextType } from "../auth/authContext";
 
 export class UnitOfWork {
   private newEntities = new Set<Entity<any>>();
@@ -24,7 +25,7 @@ export class UnitOfWork {
 
   registerDirty(entity: Entity<any>): void {
     if (!entity.id) throw new Error("Entity must have an ID");
-    if (this.newEntities.has(entity)) return; // Новые сущности уже будут сохранены
+    if (this.newEntities.has(entity)) return;
 
     if (!this.dirtyEntities.has(entity)) {
       this.dirtyEntities.set(entity, JSON.parse(JSON.stringify(entity)));
@@ -49,21 +50,21 @@ export class UnitOfWork {
     return mapper;
   }
 
-  async commit(): Promise<void> {
+  async commit(authContext: AuthContextType): Promise<void> {
     try {
       for (const entity of this.newEntities) {
-        await this.getMapper(entity).insert(entity);
+        await this.getMapper(entity).insert(entity, authContext);
       }
 
       for (const [entity, original] of this.dirtyEntities) {
         const changes = this.getChanges(original, entity);
         if (Object.keys(changes).length > 0) {
-          await this.getMapper(entity).update(entity.id, changes);
+          await this.getMapper(entity).update(entity.id, changes, authContext);
         }
       }
 
       for (const entity of this.deletedEntities) {
-        await this.getMapper(entity).delete(entity.id);
+        await this.getMapper(entity).delete(entity.id, authContext);
       }
 
       this.clear();
