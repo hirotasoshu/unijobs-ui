@@ -3,7 +3,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Typography,
   Avatar,
   ListItemText,
   Tooltip,
