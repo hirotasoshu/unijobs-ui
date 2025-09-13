@@ -5,6 +5,7 @@ import { EmployerPage } from "./presentation/pages/EmployerPage";
 import Layout from "./presentation/Layout";
 import { AuthProvider } from "./application/auth/authContext";
 import { KeycloakIdentityProvider } from "./infra/auth/idp";
+import UserApplicationsPage from "./presentation/pages/UserApplicationsPage";
 
 const keycloakProvider = new KeycloakIdentityProvider();
 
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/vacancies/:id" element={<VacancyPage />} />
             <Route path="/employers/:employerId" element={<EmployerPage />} />
+            <Route path="/applications" element={<UserApplicationsPage />} />
           </Routes>
         </Layout>
       </BrowserRouter>
