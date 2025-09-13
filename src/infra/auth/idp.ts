@@ -37,7 +37,17 @@ export class KeycloakIdentityProvider implements IdentityProvider {
   }
 
   getUsername(): string | null {
-    return this.keycloak.tokenParsed?.preferred_username || null;
+    const token = this.keycloak.tokenParsed;
+    if (!token) return null;
+
+    const firstName = token.given_name as string | undefined;
+    const lastName = token.family_name as string | undefined;
+
+    if (firstName || lastName) {
+      return [firstName, lastName].filter(Boolean).join(" ");
+    }
+
+    return token.preferred_username ?? null;
   }
 
   getUserId(): UserId | null {
