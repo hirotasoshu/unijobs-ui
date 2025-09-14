@@ -17,6 +17,7 @@ import { GetVacanciesByFilters } from "../../application/query/getVacanciesByFil
 import { DummyEmployerGateway } from "../../infra/persistance/dummy/employerGateway";
 import { HttpEmployerGateway } from "../../infra/persistance/http/employerGateway";
 import { DummyVacancyGateway } from "../../infra/persistance/dummy/vacancyGateway";
+import { HttpVacancyGateway } from "../../infra/persistance/http/vacancyGateway";
 import VacancyCard from "../components/VacancyCard";
 
 export const EmployerPage = () => {
@@ -38,7 +39,8 @@ export const EmployerPage = () => {
 
   // const employerGateway = new DummyEmployerGateway();
   const employerGateway = new HttpEmployerGateway();
-  const vacancyGateway = new DummyVacancyGateway();
+  // const vacancyGateway = new DummyVacancyGateway();
+  const vacancyGateway = new HttpVacancyGateway();
   const getEmployerQuery = new GetEmployerById(employerGateway);
   const getVacanciesQuery = new GetVacanciesByFilters(vacancyGateway);
 
