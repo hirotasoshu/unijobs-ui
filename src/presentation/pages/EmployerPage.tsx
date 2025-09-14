@@ -15,6 +15,7 @@ import { PaginatedResult } from "../../application/query/common/paginatedResult"
 import { GetEmployerById } from "../../application/query/getEmployerById";
 import { GetVacanciesByFilters } from "../../application/query/getVacanciesByFilters";
 import { DummyEmployerGateway } from "../../infra/persistance/dummy/employerGateway";
+import { HttpEmployerGateway } from "../../infra/persistance/http/employerGateway";
 import { DummyVacancyGateway } from "../../infra/persistance/dummy/vacancyGateway";
 import VacancyCard from "../components/VacancyCard";
 
@@ -35,7 +36,8 @@ export const EmployerPage = () => {
   const [page, setPage] = useState(1);
   const pageSize = 5;
 
-  const employerGateway = new DummyEmployerGateway();
+  // const employerGateway = new DummyEmployerGateway();
+  const employerGateway = new HttpEmployerGateway();
   const vacancyGateway = new DummyVacancyGateway();
   const getEmployerQuery = new GetEmployerById(employerGateway);
   const getVacanciesQuery = new GetVacanciesByFilters(vacancyGateway);
