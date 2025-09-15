@@ -13,10 +13,12 @@ import {
 } from "@mui/material";
 import { useAuth } from "../../application/auth/authContext";
 import { DummyApplicationGateway } from "../../infra/persistance/dummy/applicationGateway";
+import { HttpApplicationGateway } from "../../infra/persistance/http/applicationGateway";
 import { GetUserApplications } from "../../application/query/getUserApplications";
 import { ApplicationViewModel } from "../../application/common/models/application";
 
-const applicationGateway = new DummyApplicationGateway();
+// const applicationGateway = new DummyApplicationGateway();
+const applicationGateway = new HttpApplicationGateway();
 const getUserApplicationsQuery = new GetUserApplications(applicationGateway);
 
 const getStatusColor = (status: string) => {

@@ -22,17 +22,19 @@ import { GetUserApplicationForVacancy } from "../../application/query/getUserApp
 import { GetVacancyById } from "../../application/query/getVacancyById";
 import { ApplyForVacancyUseCase } from "../../application/usecase/applyForVacancy";
 import { UpdateApplicationCoverLetter } from "../../application/usecase/updateApplicationCoverLetter";
-import { DummyVacancyGateway } from "../../infra/persistance/dummy/vacancyGateway";
-import { HttpVacancyGateway } from "../../infra/persistance/http/vacancyGateway";
-import { DummyApplicationGateway } from "../../infra/persistance/dummy/applicationGateway";
-import { DummyApplicationDataMapper } from "../../infra/persistance/dummy/applicationDataMapper";
-import { formatSalary } from "../shared/formatSalary";
 import { Application } from "../../domain/entities/application";
+import { DummyApplicationDataMapper } from "../../infra/persistance/dummy/applicationDataMapper";
+import { HttpApplicationDataMapper } from "../../infra/persistance/http/applicationDataMapper";
+import { HttpApplicationGateway } from "../../infra/persistance/http/applicationGateway";
+import { HttpVacancyGateway } from "../../infra/persistance/http/vacancyGateway";
+import { formatSalary } from "../shared/formatSalary";
 
 // const vacancyGateway = new DummyVacancyGateway();
 const vacancyGateway = new HttpVacancyGateway();
-const applicationGateway = new DummyApplicationGateway();
-const applicationDataMapper = new DummyApplicationDataMapper();
+// const applicationGateway = new DummyApplicationGateway();
+const applicationGateway = new HttpApplicationGateway();
+// const applicationDataMapper = new DummyApplicationDataMapper();
+const applicationDataMapper = new HttpApplicationDataMapper();
 
 const getVacancyQuery = new GetVacancyById(vacancyGateway);
 const getUserApplicationQuery = new GetUserApplicationForVacancy(
