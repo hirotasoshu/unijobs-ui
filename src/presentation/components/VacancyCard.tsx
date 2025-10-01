@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { VacancyViewModel } from "../../application/common/models/vacancy";
 import { formatSalary } from "../shared/formatSalary";
@@ -18,6 +19,8 @@ interface Props {
 
 const VacancyCard = ({ vacancy }: Props) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const handleEmployerClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigate(`/employers/${vacancy.employer.id}`);
@@ -75,7 +78,7 @@ const VacancyCard = ({ vacancy }: Props) => {
                 onClick={() => navigate(`/vacancies/${vacancy.id}`)}
                 size="small"
               >
-                Подробнее
+                {t("vacancy.details")}
               </Button>
             </Box>
           </Box>
