@@ -9,11 +9,12 @@ export class GetUserApplicationForVacancy {
   async execute(
     vacancyId: VacancyId,
     authContext: AuthContextType,
+    lang?: string,
   ): Promise<ApplicationDetailViewModel | null> {
     if (!authContext.isAuthenticated) {
       throw new Error("Not authenticated");
     }
 
-    return this.gateway.getByVacancyId(vacancyId, authContext);
+    return this.gateway.getByVacancyId(vacancyId, authContext, lang);
   }
 }

@@ -11,9 +11,11 @@ export interface ApplicationGateway {
     authContext: AuthContextType,
     page?: number,
     pageSize?: number,
+    lang?: string,
   ): Promise<PaginatedResult<ApplicationViewModel>>;
   getByVacancyId(
     id: VacancyId,
     authContext: AuthContextType,
+    lang?: string,
   ): Promise<ApplicationDetailViewModel | null>;
 }

@@ -9,8 +9,15 @@ export class HttpEmployerGateway implements EmployerGateway {
     this.baseUrl = baseUrl;
   }
 
-  async getById(id: EmployerId): Promise<EmployerDetailViewModel> {
-    const response = await fetch(`${this.baseUrl}/${id}`);
+  async getById(
+    id: EmployerId,
+    lang?: string,
+  ): Promise<EmployerDetailViewModel> {
+    const headers: HeadersInit = {};
+    if (lang) {
+      headers["Accept-Language"] = lang;
+    }
+    const response = await fetch(`${this.baseUrl}/${id}`, { headers });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

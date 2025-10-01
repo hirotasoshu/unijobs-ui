@@ -18,15 +18,18 @@ export class HttpApplicationGateway implements ApplicationGateway {
     authContext: AuthContextType,
     page: number = 1,
     pageSize: number = 10,
+    lang?: string,
   ): Promise<PaginatedResult<ApplicationViewModel>> {
     const token = await authContext.getToken();
     const url = new URL("/users/me/applications", this.baseUrl);
     url.searchParams.set("page", String(page));
     url.searchParams.set("page_size", String(pageSize));
+    const headers: HeadersInit = { Authorization: `Bearer ${token}` };
+    if (lang) {
+      headers["Accept-Language"] = lang;
+    }
 
-    const res = await fetch(url.toString(), {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await fetch(url.toString(), { headers });
 
     if (!res.ok) {
       throw new Error(`Failed to fetch applications: ${res.status}`);
@@ -44,11 +47,17 @@ export class HttpApplicationGateway implements ApplicationGateway {
   async getByVacancyId(
     id: VacancyId,
     authContext: AuthContextType,
+    lang?: string,
   ): Promise<ApplicationDetailViewModel | null> {
     const token = await authContext.getToken();
+    const headers: HeadersInit = { Authorization: `Bearer ${token}` };
+    if (lang) {
+      headers["Accept-Language"] = lang;
+    }
+
     const res = await fetch(
       `${this.baseUrl}/users/me/applications/vacancies/${id}`,
-      { headers: { Authorization: `Bearer ${token}` } },
+      { headers },
     );
 
     if (res.status === 404) {

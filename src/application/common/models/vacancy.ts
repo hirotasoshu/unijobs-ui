@@ -28,4 +28,5 @@ export type VacancyFilters = {
   workFormat?: WorkFormat;
   employmentType?: EmploymentType;
   employerId?: EmployerId;
+  lang?: string;
 };

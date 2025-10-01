@@ -5,7 +5,10 @@ import { EmployerGateway } from "./ports/employerGateway";
 export class GetEmployerById {
   constructor(private gateway: EmployerGateway) {}
 
-  async execute(id: EmployerId): Promise<EmployerDetailViewModel> {
-    return this.gateway.getById(id);
+  async execute(
+    id: EmployerId,
+    lang?: string,
+  ): Promise<EmployerDetailViewModel> {
+    return this.gateway.getById(id, lang);
   }
 }

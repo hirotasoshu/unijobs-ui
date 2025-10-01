@@ -25,6 +25,7 @@ export class HttpVacancyGateway implements VacancyGateway {
       workFormat,
       employmentType,
       employerId,
+      lang,
     } = filters;
 
     const params = new URLSearchParams();
@@ -37,7 +38,12 @@ export class HttpVacancyGateway implements VacancyGateway {
     if (employmentType) params.append("employment_type", employmentType);
     if (employerId) params.append("employer_id", employerId);
 
-    const response = await fetch(`${this.baseUrl}?${params}`);
+    const headers: HeadersInit = {};
+    if (lang) {
+      headers["Accept-Language"] = lang;
+    }
+
+    const response = await fetch(`${this.baseUrl}?${params}`, { headers });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -59,14 +65,18 @@ export class HttpVacancyGateway implements VacancyGateway {
     }));
 
     return {
-      result: result,
+      result,
       total: responseJson.total,
       totalPages: responseJson.total_pages,
     };
   }
 
-  async getById(id: VacancyId): Promise<VacancyDetailViewModel> {
-    const response = await fetch(`${this.baseUrl}/${id}`);
+  async getById(id: VacancyId, lang?: string): Promise<VacancyDetailViewModel> {
+    const headers: HeadersInit = {};
+    if (lang) {
+      headers["Accept-Language"] = lang;
+    }
+    const response = await fetch(`${this.baseUrl}/${id}`, { headers });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

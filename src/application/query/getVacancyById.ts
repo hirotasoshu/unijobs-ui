@@ -5,7 +5,7 @@ import { VacancyGateway } from "./ports/vacancyGateway";
 export class GetVacancyById {
   constructor(private gateway: VacancyGateway) {}
 
-  async execute(id: VacancyId): Promise<VacancyDetailViewModel> {
-    return this.gateway.getById(id);
+  async execute(id: VacancyId, lang?: string): Promise<VacancyDetailViewModel> {
+    return this.gateway.getById(id, lang);
   }
 }

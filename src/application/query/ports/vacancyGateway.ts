@@ -10,5 +10,5 @@ export interface VacancyGateway {
   getByFilters(
     filters: VacancyFilters,
   ): Promise<PaginatedResult<VacancyViewModel>>;
-  getById(id: VacancyId): Promise<VacancyDetailViewModel>;
+  getById(id: VacancyId, lang?: string): Promise<VacancyDetailViewModel>;
 }

@@ -10,6 +10,7 @@ export class GetUserApplications {
     authContext: AuthContextType,
     page = 1,
     pageSize = 10,
+    lang?: string,
   ): Promise<PaginatedResult<ApplicationViewModel>> {
     if (!authContext.isAuthenticated) {
       throw new Error("Not authenticated");
@@ -18,6 +19,6 @@ export class GetUserApplications {
       throw new Error("Page must be >= 1");
     }
 
-    return this.gateway.getUserApplications(authContext, page, pageSize);
+    return this.gateway.getUserApplications(authContext, page, pageSize, lang);
   }
 }
