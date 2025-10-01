@@ -11,13 +11,12 @@ import {
   Pagination,
   Typography,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../application/auth/authContext";
-import { DummyApplicationGateway } from "../../infra/persistance/dummy/applicationGateway";
 import { HttpApplicationGateway } from "../../infra/persistance/http/applicationGateway";
 import { GetUserApplications } from "../../application/query/getUserApplications";
 import { ApplicationViewModel } from "../../application/common/models/application";
 
-// const applicationGateway = new DummyApplicationGateway();
 const applicationGateway = new HttpApplicationGateway();
 const getUserApplicationsQuery = new GetUserApplications(applicationGateway);
 
@@ -39,6 +38,7 @@ const getStatusColor = (status: string) => {
 const UserApplicationsPage = () => {
   const authContext = useAuth();
   const navigate = useNavigate();
+  const { i18n, t } = useTranslation();
 
   const [applications, setApplications] = useState<ApplicationViewModel[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,6 +55,7 @@ const UserApplicationsPage = () => {
         authContext,
         pageNumber,
         pageSize,
+        i18n.language,
       );
       setApplications(result.result);
       setTotalPages(result.totalPages);
@@ -66,13 +67,14 @@ const UserApplicationsPage = () => {
 
   useEffect(() => {
     loadApplications(1);
-  }, [authContext.isAuthenticated]);
+  }, [authContext.isAuthenticated, i18n.language]);
 
-  if (loading) return <Typography>Загрузка...</Typography>;
+  if (loading) return <Typography>{t("vacancy.loading")}</Typography>;
+
   if (!authContext.isAuthenticated) {
     return (
       <Typography color="error" align="center">
-        Просмотреть отклики может только авторизованный пользователь
+        {t("userApplications.authRequired")}
       </Typography>
     );
   }
@@ -80,7 +82,7 @@ const UserApplicationsPage = () => {
   return (
     <Container sx={{ mt: 6 }}>
       <Typography variant="h4" gutterBottom>
-        Мои отклики
+        {t("userApplications.title")}
       </Typography>
       <Grid container spacing={3}>
         {applications.map((app) => (
@@ -108,15 +110,7 @@ const UserApplicationsPage = () => {
                 </Typography>
                 <Box sx={{ mt: 1 }}>
                   <Chip
-                    label={
-                      app.status === "pending"
-                        ? "В ожидании"
-                        : app.status === "reviewed"
-                          ? "Просмотрено"
-                          : app.status === "accepted"
-                            ? "Принято"
-                            : "Отклонено"
-                    }
+                    label={t(`vacancy.status.${app.status}`)}
                     color={getStatusColor(app.status)}
                   />
                 </Box>
