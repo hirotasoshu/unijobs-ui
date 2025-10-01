@@ -23,17 +23,14 @@ import { GetVacancyById } from "../../application/query/getVacancyById";
 import { ApplyForVacancyUseCase } from "../../application/usecase/applyForVacancy";
 import { UpdateApplicationCoverLetter } from "../../application/usecase/updateApplicationCoverLetter";
 import { Application } from "../../domain/entities/application";
-import { DummyApplicationDataMapper } from "../../infra/persistance/dummy/applicationDataMapper";
 import { HttpApplicationDataMapper } from "../../infra/persistance/http/applicationDataMapper";
 import { HttpApplicationGateway } from "../../infra/persistance/http/applicationGateway";
 import { HttpVacancyGateway } from "../../infra/persistance/http/vacancyGateway";
 import { formatSalary } from "../shared/formatSalary";
+import { useTranslation } from "react-i18next";
 
-// const vacancyGateway = new DummyVacancyGateway();
 const vacancyGateway = new HttpVacancyGateway();
-// const applicationGateway = new DummyApplicationGateway();
 const applicationGateway = new HttpApplicationGateway();
-// const applicationDataMapper = new DummyApplicationDataMapper();
 const applicationDataMapper = new HttpApplicationDataMapper();
 
 const getVacancyQuery = new GetVacancyById(vacancyGateway);
@@ -46,6 +43,7 @@ const updateCoverLetterUseCase = new UpdateApplicationCoverLetter(
 );
 
 const VacancyPage = () => {
+  const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const authContext = useAuth();
@@ -55,22 +53,37 @@ const VacancyPage = () => {
   const [coverLetter, setCoverLetter] = useState("");
 
   useEffect(() => {
-    if (id) {
-      getVacancyQuery.execute(id).then(setVacancy);
+    if (!id) return;
 
-      if (authContext.isAuthenticated) {
-        getUserApplicationQuery.execute(id, authContext).then((appVm) => {
+    const fetchData = async () => {
+      try {
+        const vacancyData = await getVacancyQuery.execute(id, i18n.language);
+        setVacancy(vacancyData);
+
+        if (authContext.isAuthenticated) {
+          const appVm = await getUserApplicationQuery.execute(
+            id,
+            authContext,
+            i18n.language,
+          );
           if (appVm) {
             const entity = ApplicationMapper.toEntity(appVm);
             setApplication(entity);
             setCoverLetter(entity.coverLetter);
+          } else {
+            setApplication(null);
+            setCoverLetter("");
           }
-        });
+        }
+      } catch (error) {
+        console.error(error);
       }
-    }
-  }, [id, authContext.isAuthenticated]);
+    };
 
-  if (!vacancy) return <Typography>Загрузка...</Typography>;
+    fetchData();
+  }, [id, authContext.isAuthenticated, i18n.language]);
+
+  if (!vacancy) return <Typography>{t("vacancy.loading")}</Typography>;
 
   const handleEmployerClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -79,7 +92,6 @@ const VacancyPage = () => {
 
   const handleApply = async () => {
     if (!vacancy) return;
-
     const optimisticEntity = Application.createNew({
       vacancyId: vacancy.id,
       coverLetter,
@@ -130,15 +142,15 @@ const VacancyPage = () => {
   const getStatusChip = (status: string) => {
     switch (status) {
       case "pending":
-        return <Chip label="В ожидании" color="warning" />;
+        return <Chip label={t("vacancy.status.pending")} color="warning" />;
       case "reviewed":
-        return <Chip label="Просмотрено" color="info" />;
+        return <Chip label={t("vacancy.status.reviewed")} color="info" />;
       case "accepted":
-        return <Chip label="Принято" color="success" />;
+        return <Chip label={t("vacancy.status.accepted")} color="success" />;
       case "rejected":
-        return <Chip label="Отклонено" color="error" />;
+        return <Chip label={t("vacancy.status.rejected")} color="error" />;
       default:
-        return <Chip label="Неизвестно" />;
+        return <Chip label={t("vacancy.status.unknown")} />;
     }
   };
 
@@ -162,6 +174,7 @@ const VacancyPage = () => {
         <Typography variant="h4" component="h1" gutterBottom>
           {vacancy.title}
         </Typography>
+
         <Typography
           variant="subtitle1"
           color="text.secondary"
@@ -185,7 +198,8 @@ const VacancyPage = () => {
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <CurrencyRubleIcon sx={{ mr: 1 }} />
               <Typography variant="h6">
-                Зарплата: {formatSalary(vacancy.salaryFrom, vacancy.salaryTo)}
+                {t("vacancy.salary")}:{" "}
+                {formatSalary(vacancy.salaryFrom, vacancy.salaryTo)}
               </Typography>
             </Box>
           </Grid>
@@ -193,12 +207,12 @@ const VacancyPage = () => {
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <WorkOutlineIcon sx={{ mr: 1 }} />
               <Typography variant="h6">
-                Формат работы:{" "}
+                {t("vacancy.workFormat")}:{" "}
                 {vacancy.workFormat === "onsite"
-                  ? "Офис"
+                  ? t("vacancy.workFormatOptions.onsite")
                   : vacancy.workFormat === "remote"
-                    ? "Удалёнка"
-                    : "Гибрид"}
+                    ? t("vacancy.workFormatOptions.remote")
+                    : t("vacancy.workFormatOptions.hybrid")}
               </Typography>
             </Box>
           </Grid>
@@ -206,21 +220,21 @@ const VacancyPage = () => {
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <AccessTimeIcon sx={{ mr: 1 }} />
               <Typography variant="h6">
-                Тип занятости:{" "}
+                {t("vacancy.employmentType")}:{" "}
                 {vacancy.employmentType === "part-time"
-                  ? "Частичная занятость"
+                  ? t("vacancy.employmentTypeOptions.partTime")
                   : vacancy.employmentType === "full-time"
-                    ? "Полная занятость"
+                    ? t("vacancy.employmentTypeOptions.fullTime")
                     : vacancy.employmentType === "internship"
-                      ? "Стажировка"
-                      : "Подработка"}
+                      ? t("vacancy.employmentTypeOptions.internship")
+                      : t("vacancy.employmentTypeOptions.temporary")}
               </Typography>
             </Box>
           </Grid>
         </Grid>
 
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Ключевые навыки:
+          {t("vacancy.keySkills")}:
         </Typography>
         <Box sx={{ mb: 3 }}>
           {vacancy.key_skills.map((skill, index) => (
@@ -244,7 +258,7 @@ const VacancyPage = () => {
         {authContext.isAuthenticated ? (
           <>
             <TextField
-              label="Сопроводительное письмо"
+              label={t("vacancy.coverLetter")}
               multiline
               fullWidth
               rows={4}
@@ -261,7 +275,7 @@ const VacancyPage = () => {
                 disabled={isUpdateDisabled}
                 onClick={handleUpdateCoverLetter}
               >
-                Изменить сопроводительное письмо
+                {t("vacancy.updateCoverLetter")}
               </Button>
             ) : (
               <Button
@@ -270,7 +284,7 @@ const VacancyPage = () => {
                 fullWidth
                 onClick={handleApply}
               >
-                Откликнуться на вакансию
+                {t("vacancy.apply")}
               </Button>
             )}
 
@@ -280,7 +294,8 @@ const VacancyPage = () => {
                   variant="subtitle1"
                   sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
-                  Статус отклика: {getStatusChip(application.status)}
+                  {t("vacancy.applicationStatus")}:{" "}
+                  {getStatusChip(application.status)}
                 </Typography>
               </Box>
             )}
@@ -292,7 +307,7 @@ const VacancyPage = () => {
             align="center"
             sx={{ mt: 2 }}
           >
-            Откликнуться может только авторизованный пользователь
+            {t("vacancy.authRequired")}
           </Typography>
         )}
       </Card>
