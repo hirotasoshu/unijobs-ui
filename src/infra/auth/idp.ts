@@ -1,6 +1,7 @@
 import Keycloak from "keycloak-js";
 import { IdentityProvider } from "../../application/auth/idp";
 import { UserId } from "../../domain/valueObjects/id";
+import i18n from "../../i18n";
 
 export class KeycloakIdentityProvider implements IdentityProvider {
   private keycloak: Keycloak;
@@ -25,7 +26,8 @@ export class KeycloakIdentityProvider implements IdentityProvider {
   }
 
   async login(): Promise<void> {
-    await this.keycloak.login();
+    const lng = i18n.language?.split("-")[0] || "ru";
+    await this.keycloak.login({ locale: lng });
   }
 
   async logout(): Promise<void> {
