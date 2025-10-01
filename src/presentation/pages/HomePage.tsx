@@ -15,7 +15,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   VacancyFilters,
   VacancyViewModel,
@@ -23,13 +24,14 @@ import {
 import { GetVacanciesByFilters } from "../../application/query/getVacanciesByFilters";
 import { EmploymentType } from "../../domain/valueObjects/employmentType";
 import { WorkFormat } from "../../domain/valueObjects/workformat";
-import { DummyVacancyGateway } from "../../infra/persistance/dummy/vacancyGateway";
 import { HttpVacancyGateway } from "../../infra/persistance/http/vacancyGateway";
 import VacancyCard from "../components/VacancyCard";
 
 const PAGE_SIZE = 5;
 
 const HomePage = () => {
+  const { i18n, t } = useTranslation();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [salaryFrom, setSalaryFrom] = useState<number | undefined>(undefined);
@@ -43,17 +45,13 @@ const HomePage = () => {
     result: VacancyViewModel[];
     total: number;
     totalPages: number;
-  }>({
-    result: [],
-    total: 0,
-    totalPages: 0,
-  });
+  }>({ result: [], total: 0, totalPages: 0 });
 
   // const gateway = new DummyVacancyGateway();
   const gateway = new HttpVacancyGateway();
   const getVacanciesUseCase = new GetVacanciesByFilters(gateway);
 
-  useEffect(() => {
+  const fetchVacancies = useCallback(() => {
     const filters: VacancyFilters = {
       search: searchTerm,
       page,
@@ -61,12 +59,25 @@ const HomePage = () => {
       salaryFrom,
       workFormat,
       employmentType,
+      lang: i18n.language,
     };
-
     getVacanciesUseCase.execute(filters).then((data) => {
       setVacanciesData(data);
     });
-  }, [searchTerm, page, salaryFrom, workFormat, employmentType]);
+  }, [searchTerm, page, salaryFrom, workFormat, employmentType, i18n.language]);
+
+  useEffect(() => {
+    fetchVacancies();
+  }, [fetchVacancies]);
+
+  // обновление данных при смене языка без сброса страницы
+  useEffect(() => {
+    const handleLangChange = () => {
+      fetchVacancies();
+    };
+    i18n.on("languageChanged", handleLangChange);
+    return () => i18n.off("languageChanged", handleLangChange);
+  }, [i18n, fetchVacancies]);
 
   const handleClearFilters = () => {
     setSearchTerm("");
@@ -80,11 +91,11 @@ const HomePage = () => {
     <Container sx={{ mt: 6 }}>
       <Stack spacing={3}>
         <Typography variant="h4" component="h1">
-          Доступные вакансии
+          {t("home.availableVacancies")}
         </Typography>
 
         <TextField
-          label="Поиск по названию, отделу или работодателю"
+          label={t("home.searchPlaceholder")}
           variant="outlined"
           fullWidth
           value={searchTerm}
@@ -106,7 +117,7 @@ const HomePage = () => {
         <Grid container spacing={2} alignItems="flex-end">
           <Grid item xs={12} sm={6} md={3}>
             <TextField
-              label="Минимальная зарплата"
+              label={t("home.salaryFrom")}
               variant="outlined"
               type="number"
               fullWidth
@@ -134,7 +145,7 @@ const HomePage = () => {
 
           <Grid item xs={12} sm={6} md={3}>
             <FormControl fullWidth variant="outlined" sx={{ minWidth: 180 }}>
-              <InputLabel>Формат работы</InputLabel>
+              <InputLabel>{t("home.workFormat")}</InputLabel>
               <Select
                 value={workFormat ?? ""}
                 onChange={(e) =>
@@ -142,24 +153,22 @@ const HomePage = () => {
                     e.target.value ? (e.target.value as WorkFormat) : undefined,
                   )
                 }
-                label="Формат работы"
+                label={t("home.workFormat")}
                 renderValue={(selected) =>
                   selected
                     ? selected === "onsite"
-                      ? "Офис"
+                      ? t("home.workFormatOptions.onsite")
                       : selected === "remote"
-                        ? "Удалёнка"
-                        : "Гибрид"
-                    : "Формат работы"
+                        ? t("home.workFormatOptions.remote")
+                        : t("home.workFormatOptions.hybrid")
+                    : t("home.workFormat")
                 }
                 sx={{
                   "& .MuiSelect-select": {
                     minHeight: "1.4375em",
                     minWidth: "120px !important",
                   },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    minWidth: 180,
-                  },
+                  "& .MuiOutlinedInput-notchedOutline": { minWidth: 180 },
                 }}
                 endAdornment={
                   workFormat && (
@@ -178,16 +187,22 @@ const HomePage = () => {
                   )
                 }
               >
-                <MenuItem value="onsite">Офис</MenuItem>
-                <MenuItem value="remote">Удалёнка</MenuItem>
-                <MenuItem value="hybrid">Гибрид</MenuItem>
+                <MenuItem value="onsite">
+                  {t("home.workFormatOptions.onsite")}
+                </MenuItem>
+                <MenuItem value="remote">
+                  {t("home.workFormatOptions.remote")}
+                </MenuItem>
+                <MenuItem value="hybrid">
+                  {t("home.workFormatOptions.hybrid")}
+                </MenuItem>
               </Select>
             </FormControl>
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
             <FormControl fullWidth variant="outlined" sx={{ minWidth: 180 }}>
-              <InputLabel>Тип занятости</InputLabel>
+              <InputLabel>{t("home.employmentType")}</InputLabel>
               <Select
                 value={employmentType ?? ""}
                 onChange={(e) =>
@@ -197,26 +212,24 @@ const HomePage = () => {
                       : undefined,
                   )
                 }
-                label="Тип занятости"
+                label={t("home.employmentType")}
                 renderValue={(selected) =>
                   selected
                     ? selected === "part-time"
-                      ? "Частичная"
+                      ? t("home.employmentTypeOptions.partTime")
                       : selected === "full-time"
-                        ? "Полная"
+                        ? t("home.employmentTypeOptions.fullTime")
                         : selected === "internship"
-                          ? "Стажировка"
-                          : "Подработка"
-                    : "Тип занятости"
+                          ? t("home.employmentTypeOptions.internship")
+                          : t("home.employmentTypeOptions.temporary")
+                    : t("home.employmentType")
                 }
                 sx={{
                   "& .MuiSelect-select": {
                     minHeight: "1.4375em",
                     minWidth: "120px !important",
                   },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    minWidth: 180,
-                  },
+                  "& .MuiOutlinedInput-notchedOutline": { minWidth: 180 },
                 }}
                 endAdornment={
                   employmentType && (
@@ -235,10 +248,18 @@ const HomePage = () => {
                   )
                 }
               >
-                <MenuItem value="part-time">Частичная занятость</MenuItem>
-                <MenuItem value="full-time">Полная занятость</MenuItem>
-                <MenuItem value="internship">Стажировка</MenuItem>
-                <MenuItem value="temporary">Подработка</MenuItem>
+                <MenuItem value="part-time">
+                  {t("home.employmentTypeOptions.partTime")}
+                </MenuItem>
+                <MenuItem value="full-time">
+                  {t("home.employmentTypeOptions.fullTime")}
+                </MenuItem>
+                <MenuItem value="internship">
+                  {t("home.employmentTypeOptions.internship")}
+                </MenuItem>
+                <MenuItem value="temporary">
+                  {t("home.employmentTypeOptions.temporary")}
+                </MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -251,7 +272,7 @@ const HomePage = () => {
               onClick={handleClearFilters}
               sx={{ height: "56px", minWidth: 180 }}
             >
-              Очистить все
+              {t("home.clearFilters")}
             </Button>
           </Grid>
         </Grid>
