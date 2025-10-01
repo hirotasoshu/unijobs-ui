@@ -9,11 +9,13 @@ import {
 } from "@mui/material";
 import { useAuth } from "../../application/auth/authContext";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const AuthMenu = () => {
   const { isAuthenticated, username, login, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -33,14 +35,14 @@ const AuthMenu = () => {
           cursor: "pointer",
         }}
       >
-        Войти
+        {t("login")}
       </button>
     );
   }
 
   return (
     <>
-      <Tooltip title="Аккаунт">
+      <Tooltip title={t("account")}>
         <IconButton color="inherit" onClick={handleOpen}>
           <Avatar>{username?.[0].toUpperCase()}</Avatar>
         </IconButton>
@@ -58,10 +60,10 @@ const AuthMenu = () => {
         <MenuItem
           onClick={() => {
             handleClose();
-            navigate("/applications"); // react-router navigation
+            navigate("/applications");
           }}
         >
-          Мои отклики
+          {t("myApplications")}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -69,7 +71,7 @@ const AuthMenu = () => {
             logout();
           }}
         >
-          Выйти
+          {t("logout")}
         </MenuItem>
       </Menu>
     </>
