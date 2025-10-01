@@ -70,7 +70,6 @@ const HomePage = () => {
     fetchVacancies();
   }, [fetchVacancies]);
 
-  // обновление данных при смене языка без сброса страницы
   useEffect(() => {
     const handleLangChange = () => {
       fetchVacancies();
