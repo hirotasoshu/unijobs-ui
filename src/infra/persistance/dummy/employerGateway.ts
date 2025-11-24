@@ -15,7 +15,8 @@ export class DummyEmployerGateway implements EmployerGateway {
     }
   }
   private getEmployers(): EmployerDetailViewModel[] {
-    return JSON.parse(localStorage.getItem(EMPLOYERS_KEY)) || [];
+    const data = localStorage.getItem(EMPLOYERS_KEY);
+    return data ? JSON.parse(data) : [];
   }
 
   async getById(id: EmployerId): Promise<EmployerDetailViewModel> {

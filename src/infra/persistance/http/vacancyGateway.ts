@@ -51,7 +51,7 @@ export class HttpVacancyGateway implements VacancyGateway {
 
     const responseJson = await response.json();
 
-    const result = responseJson.result.map((vacancy) => ({
+    const result = responseJson.result.map((vacancy: any) => ({
       id: vacancy.id,
       title: vacancy.title,
       location: vacancy.location,

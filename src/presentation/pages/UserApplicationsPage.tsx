@@ -86,7 +86,7 @@ const UserApplicationsPage = () => {
       </Typography>
       <Grid container spacing={3}>
         {applications.map((app) => (
-          <Grid item xs={12} md={6} key={app.id}>
+          <Grid size={{ xs: 12, md: 6 }} key={app.id}>
             <Card
               sx={{ display: "flex", cursor: "pointer" }}
               onClick={() => navigate(`/vacancies/${app.vacancy.id}`)}

@@ -114,7 +114,7 @@ const HomePage = () => {
         />
 
         <Grid container spacing={2} alignItems="flex-end">
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <TextField
               label={t("home.salaryFrom")}
               variant="outlined"
@@ -142,7 +142,7 @@ const HomePage = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <FormControl fullWidth variant="outlined" sx={{ minWidth: 180 }}>
               <InputLabel>{t("home.workFormat")}</InputLabel>
               <Select
@@ -199,7 +199,7 @@ const HomePage = () => {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <FormControl fullWidth variant="outlined" sx={{ minWidth: 180 }}>
               <InputLabel>{t("home.employmentType")}</InputLabel>
               <Select
@@ -263,7 +263,7 @@ const HomePage = () => {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Button
               fullWidth
               variant="outlined"

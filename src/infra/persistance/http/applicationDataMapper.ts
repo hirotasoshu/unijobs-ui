@@ -65,7 +65,7 @@ export class HttpApplicationDataMapper implements ApplicationDataMapper {
     }
   }
 
-  async delete(id: ApplicationId, auth: AuthContextType): Promise<void> {
+  async delete(_id: ApplicationId, _auth: AuthContextType): Promise<void> {
     console.warn("delete() is not implemented yet for ApplicationDataMapper");
   }
 }

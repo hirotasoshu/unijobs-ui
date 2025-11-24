@@ -19,5 +19,6 @@ export const formatSalary = (salaryFrom?: number, salaryTo?: number) => {
 
   return salaryFrom
     ? `${i18n.t("salary.from")} ${formatter.format(salaryFrom)}`
-    : `${i18n.t("salary.to")} ${formatter.format(salaryTo)}`;
+    : `${i18n.t("salary.to")} ${formatter.format(salaryTo!)}`;
+
 };

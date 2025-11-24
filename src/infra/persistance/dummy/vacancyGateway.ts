@@ -21,7 +21,8 @@ export class DummyVacancyGateway implements VacancyGateway {
     }
   }
   private getVacancies(): VacancyDetailViewModel[] {
-    return JSON.parse(localStorage.getItem(VACANCIES_KEY)) || [];
+    const data = localStorage.getItem(VACANCIES_KEY);
+    return data ? JSON.parse(data) : [];
   }
 
   async getByFilters(

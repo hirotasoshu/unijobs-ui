@@ -194,7 +194,7 @@ const VacancyPage = () => {
         </Typography>
 
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <CurrencyRubleIcon sx={{ mr: 1 }} />
               <Typography variant="h6">
@@ -203,7 +203,7 @@ const VacancyPage = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <WorkOutlineIcon sx={{ mr: 1 }} />
               <Typography variant="h6">
@@ -216,7 +216,7 @@ const VacancyPage = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <AccessTimeIcon sx={{ mr: 1 }} />
               <Typography variant="h6">
